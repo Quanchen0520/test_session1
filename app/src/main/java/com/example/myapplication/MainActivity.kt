@@ -7,7 +7,6 @@ import android.net.ConnectivityManager.NetworkCallback
 import android.net.Network
 import android.net.NetworkRequest
 import android.os.Bundle
-import android.util.Log
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -88,7 +87,7 @@ class MainActivity : AppCompatActivity() {
                 runOnUiThread { networkstate.text = "網路狀態: 已斷線" }
             }
         }
-        networkMonitor.registerNetworkCallbake(networkCallback)
+        networkMonitor.registerNetworkCallback(networkCallback)
     }
 
     // 3
@@ -118,7 +117,6 @@ class MainActivity : AppCompatActivity() {
             connection.disconnect()
             withContext(Dispatchers.Main) {
                 Toast.makeText(this@MainActivity, "Download Success", Toast.LENGTH_SHORT).show()
-                Log.d("Download", "下載完成: ${file.absolutePath}")
                 adapter.updateDownloadProgress(position, 100)
             }
         }
@@ -129,20 +127,20 @@ class MainActivity : AppCompatActivity() {
         private val connectivityManager =
             context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
-        fun registerNetworkCallbake(callback: NetworkCallback) {
+        fun registerNetworkCallback(callback: NetworkCallback) {
             val request = NetworkRequest.Builder().build()
             connectivityManager.registerNetworkCallback(request, callback)
         }
 
-        fun unregisterNatworkCallback(callback: NetworkCallback) {
+        fun unregisterNetworkCallback(callback: NetworkCallback) {
             connectivityManager.unregisterNetworkCallback(callback)
         }
     }
 
     // System (ctrl + O)
     override fun onDestroy() {
-        super.onDestroy()
-        networkMonitor.unregisterNatworkCallback(networkCallback)
+        super.onDestroy() // System
+        networkMonitor.unregisterNetworkCallback(networkCallback)
         adapter.releaseResources()
     }
 }
