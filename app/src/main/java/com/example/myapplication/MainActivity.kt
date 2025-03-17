@@ -25,7 +25,7 @@ import java.net.URL
 
 class MainActivity : AppCompatActivity() {
     // 1
-    private lateinit var networkMonitor: NetworkMonitor
+    private lateinit var networkMonitor: NetworkMonitor // -> 4
     private lateinit var networkCallback: NetworkCallback
     private lateinit var adapter: Adapter
     private lateinit var networkstate: TextView

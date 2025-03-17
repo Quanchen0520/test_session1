@@ -36,8 +36,8 @@ class Adapter(
         fun bind(position: Int, musicItem: MusicItem) {
             itemView.findViewById<TextView>(R.id.MusicName).text = musicItem.SongName
             musicImage.load(musicItem.imageURL)
-            setupUI(position)
-            setupListeners(position, musicItem.SongURL)
+            setupUI(position) // -> 5
+            setupListeners(position, musicItem.SongURL) // -> 6
         }
 
         // 5
@@ -75,11 +75,11 @@ class Adapter(
         // 6
         private fun setupListeners(position: Int, url: String?) {
             playBtn.setOnClickListener {
-                if (currentPlayingPosition == position) stopMusic()
-                else url?.let { playMusic(it, position, this) }
+                if (currentPlayingPosition == position) stopMusic() // -> 7
+                else url?.let { playMusic(it, position, this) } // -> 8
             }
             downloadBtn.setOnClickListener {
-                if (downloadCompleted[position] != true) startDownload(position)
+                if (downloadCompleted[position] != true) startDownload(position) // -> 10
             }
             seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
                 override fun onProgressChanged(
@@ -107,6 +107,17 @@ class Adapter(
     }
 
     // 7
+    private fun stopMusic() {
+        currentPlayingPosition?.let {
+            seekBarUpdateRunnable.remove(it)?.let { handler.removeCallbacks(it) }
+            notifyItemChanged(it)
+        }
+        mediaPlayer?.release()
+        mediaPlayer = null
+        currentPlayingPosition = null
+    }
+
+    // 8
     private fun playMusic(url: String, position: Int, holder: UserViewHolder) {
         stopMusic()
         currentPlayingPosition = position
@@ -122,17 +133,6 @@ class Adapter(
             setOnCompletionListener { stopMusic() }
             prepareAsync()
         }
-    }
-
-    // 8
-    private fun stopMusic() {
-        currentPlayingPosition?.let {
-            seekBarUpdateRunnable.remove(it)?.let { handler.removeCallbacks(it) }
-            notifyItemChanged(it)
-        }
-        mediaPlayer?.release()
-        mediaPlayer = null
-        currentPlayingPosition = null
     }
 
     // 9
