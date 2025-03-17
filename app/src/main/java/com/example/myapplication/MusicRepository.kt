@@ -11,13 +11,15 @@ object MusicRepository {
     fun fetchMusicList(callback: (List<MusicItem>) -> Unit) {
         val requst = Request.Builder().url(JSON_URL).build()
         client.newCall(requst).enqueue(object : Callback {
+
+            // System ( ctrl + O )
             override fun onFailure(call: Call, e: IOException) {
                 Log.e("download", "下載失敗: ${e.message}")
             }
 
             override fun onResponse(call: Call, response: Response) {
                 response.body?.string().let { json ->
-                    Log.e("download", "下載失敗: $json")
+                    Log.e("download", "下載成功: $json")
                     val musicResponse = Gson().fromJson(json, MusicResponse::class.java)
                     callback(musicResponse.resultList)
                 }
